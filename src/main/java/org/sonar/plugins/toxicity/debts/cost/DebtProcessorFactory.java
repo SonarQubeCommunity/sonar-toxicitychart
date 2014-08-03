@@ -70,6 +70,20 @@ public final class DebtProcessorFactory {
   public static final String ANON_INNER_LENGTH_SQUID = "S1188";
   public static final String CLASS_FAN_OUT_COMPLEXITY_SQUID = "S1200";
 
+
+  /**
+   * FXCop
+   */
+  public static final String CYCLOMATIC_COMPLEXITY_FXCOP = "AvoidExcessiveComplexity";
+  public static final String CLASS_DATA_ABSTRACTION_COUPLING_FXCOP = "AvoidExcessiveClassCoupling";
+
+  /**
+   * CSharp squid
+   */
+  public static final String MISSING_SWITCH_DEFAULT_SQUID_CS_SQUID = "SwitchWithoutDefault";
+  public static final String FILE_LENGTH_CS_SQUID = "FileLoc";
+  public static final String PARAMETER_NUMBER_CS_SQUID = "S107";
+
   private Map<String, DebtProcessor> ruleKeyDebtProcessorMap;
 
   public DebtProcessorFactory() {
@@ -84,6 +98,8 @@ public final class DebtProcessorFactory {
     List<DebtProcessor> debts = new ArrayList<DebtProcessor>();
     registerCheckStyleRules(constantCostProcessor, twoValuesCostProcessor, debts);
     registerSquidRules(constantCostProcessor, twoValuesCostProcessor, debts);
+    registerFxCopRules(constantCostProcessor, twoValuesCostProcessor, debts);
+    registerCSharpSquidRules(constantCostProcessor, twoValuesCostProcessor, debts);
 
     Map<String, DebtProcessor> map = new HashMap<String, DebtProcessor>();
     for (DebtProcessor debt : debts) {
@@ -119,6 +135,16 @@ public final class DebtProcessorFactory {
     debts.add(new DebtProcessor(CLASS_DATA_ABSTRACTION_COUPLING_CHECK_STYLE, twoValuesCostProcessor, DebtType.CLASS_DATA_ABSTRACTION_COUPLING));
     debts.add(new DebtProcessor(CLASS_FAN_OUT_COMPLEXITY_CHECK_STYLE, twoValuesCostProcessor, DebtType.CLASS_FAN_OUT_COMPLEXITY));
     debts.add(new DebtProcessor(CYCLOMATIC_COMPLEXITY_CHECK_STYLE, twoValuesCostProcessor, DebtType.CYCLOMATIC_COMPLEXITY));
+  }
+  private void registerFxCopRules(DebtCostProcessor constantCostProcessor, DebtCostProcessor twoValuesCostProcessor, List<DebtProcessor> debts) {
+    debts.add(new DebtProcessor(CYCLOMATIC_COMPLEXITY_FXCOP, twoValuesCostProcessor, DebtType.CYCLOMATIC_COMPLEXITY));
+    debts.add(new DebtProcessor(CLASS_DATA_ABSTRACTION_COUPLING_FXCOP, twoValuesCostProcessor, DebtType.CLASS_DATA_ABSTRACTION_COUPLING));
+  }
+
+  private void registerCSharpSquidRules(DebtCostProcessor constantCostProcessor, DebtCostProcessor twoValuesCostProcessor, List<DebtProcessor> debts) {
+    debts.add(new DebtProcessor(MISSING_SWITCH_DEFAULT_SQUID_CS_SQUID, constantCostProcessor, DebtType.MISSING_SWITCH_DEFAULT));
+    debts.add(new DebtProcessor(FILE_LENGTH_CS_SQUID, twoValuesCostProcessor, DebtType.FILE_LENGTH));
+    debts.add(new DebtProcessor(PARAMETER_NUMBER_CS_SQUID, constantCostProcessor, DebtType.PARAMETER_NUMBER));
   }
 
   public DebtProcessor getDebtProcessor(Issue issue) {

@@ -23,7 +23,6 @@ package org.sonar.plugins.toxicity.dao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sonar.api.database.DatabaseSession;
-import org.sonar.api.database.model.MeasureData;
 import org.sonar.api.database.model.MeasureModel;
 
 import javax.persistence.PersistenceException;
@@ -51,9 +50,9 @@ public class MeasureDao {
    * @param id
    * @return the measure data or null if no data are saved for the given id
    */
-  public MeasureData getMeasureDataById(String id) {
+  public String getMeasureDataById(String id) {
 
-    MeasureData data;
+    String data = null; // Updated to take into account the removal of MeasureData
     try {
       session.start();
       Query query = session
@@ -61,7 +60,7 @@ public class MeasureDao {
       query.setParameter(1, Long.valueOf(id));
 
       MeasureModel measure = (MeasureModel) query.getSingleResult();
-      data = measure.getMeasureData();
+      data = measure.getData(null); // Assumes that we're looking for the text data and not a metric value
     } catch (PersistenceException e) {
       LOGGER.error(e.getMessage(), e);
       data = null;

@@ -26,7 +26,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.sonar.api.database.DatabaseSession;
-import org.sonar.api.database.model.MeasureData;
 import org.sonar.api.database.model.MeasureModel;
 
 import javax.persistence.NoResultException;
@@ -72,10 +71,9 @@ public class MeasureDaoTest {
         String id = "1";
 
         MeasureModel model = mock(MeasureModel.class);
-        MeasureData data = mock(MeasureData.class);
 
         when(query.getSingleResult()).thenReturn(model);
-        when(model.getMeasureData()).thenReturn(data);
+        when(model.getData(null)).thenReturn("test");
 
         dao.getMeasureDataById(id);
 
