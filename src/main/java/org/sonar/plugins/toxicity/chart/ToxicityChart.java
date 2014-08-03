@@ -39,7 +39,6 @@ import org.sonar.api.charts.AbstractChart;
 import org.sonar.api.charts.ChartParameters;
 import org.sonar.api.config.Settings;
 import org.sonar.api.database.DatabaseSession;
-import org.sonar.api.database.model.MeasureData;
 import org.sonar.plugins.toxicity.ToxicityChartPlugin;
 import org.sonar.plugins.toxicity.dao.MeasureDao;
 import org.sonar.plugins.toxicity.model.Debt;
@@ -84,8 +83,8 @@ public class ToxicityChart extends AbstractChart {
   @Override
   protected Plot getPlot(ChartParameters params) {
 
-    MeasureData data = dao.getMeasureDataById(params.getValue(MEASURE_ID));
-    Toxicity toxicity = ToxicityXmlParser.convertXmlToToxicity(data != null ? data.getData() : null);
+    String data = dao.getMeasureDataById(params.getValue(MEASURE_ID));
+    Toxicity toxicity = ToxicityXmlParser.convertXmlToToxicity(data != null ? data.getBytes() : null);
 
     Set<String> seriesOrderedByFirstUse = new LinkedHashSet<String>();
     CategoryDataset dataset = createDataset(toxicity, seriesOrderedByFirstUse);
